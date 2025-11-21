@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Landing page{% endblock %}
+
+{% block main %}
+    <div id="content" class="flex flex-col items-center min-h-screen">
+        <h1 class="text-3xl">Welcome to the Todo Web App!</h1>
+        <h2 class="text-1xl">This is the landing page of the app. This page does not require authentication</h2>
+        <a class="link link-secondary" href="{{ url_for('dashboard') }}">Go to dashboard</a>
+    </div>
+{% endblock %}

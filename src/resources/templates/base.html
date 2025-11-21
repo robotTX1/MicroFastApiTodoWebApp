@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Todo Web App{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/main.css') }}">
+    <script defer src="{{ url_for('static', path='js/htmx.min.js') }}"></script>
+    <script defer src="{{ url_for('static', path='js/alpine.min.js') }}"></script>
+</head>
+<body>
+<main>
+    {% block main %}
+        Default content
+    {% endblock %}
+</main>
+
+</body>
+</html>

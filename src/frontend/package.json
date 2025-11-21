@@ -1,0 +1,18 @@
+{
+  "name": "micro-fast-api-todo-web-app-tailwind-css",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx @tailwindcss/cli -i ./style.css -o ../resources/static/css/main.css --minify",
+    "watch": "npx @tailwindcss/cli --watch -i ./style.css -o ../resources/static/css/main.css"
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.13",
+    "daisyui": "^5.1.23",
+    "tailwindcss": "^4.1.13"
+  }
+}

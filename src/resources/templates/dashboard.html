@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from "components/_macros.html" import todo_skeleton %}
+
+{% block title %}Protected Page{% endblock %}
+
+{% block main %}
+    <div id="content" class="flex flex-col items-center min-h-screen">
+        <h1 class="text-3xl">Hi {{ name }}</h1>
+        <h2 class="text-1xl">Welcome to your dashboard!</h2>
+        <a class="link link-secondary" href="{{ url_for('landing') }}">Go to landing</a>
+        <div hx-get="{{ url_for('dashboard_todos') }}"
+             hx-trigger="load"
+             hx-swap="outerHTML">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {% for foo in range(16) %}
+                    <div class="m-2">
+                        {{ todo_skeleton() }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

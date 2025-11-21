@@ -1,0 +1,8 @@
+services:
+  valkey:
+    image: 'valkey/valkey:8.1.3-alpine'
+    hostname: valkey-for-fastapi
+    network_mode: host
+    command: valkey-server --save ""
+    ports:
+      - '6379'

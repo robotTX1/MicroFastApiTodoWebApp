@@ -1,0 +1,36 @@
+{% macro todo_card(todo) %}
+    <div class="card w-96 bg-base-200 shadow-sm h-full">
+        <div class="card-body card-border">
+            <span class="badge badge-soft badge-xs shadow {{ priority_color(todo.priority) }}">{{ todo.priority_text }}</span>
+            <div class="flex justify-between">
+                <h2 class="text-xl font-bold">{{ todo.title }}</h2>
+            </div>
+            <div class="mt-6 flex flex-col gap-2">
+                <p>{{ todo.description }}</p>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro todo_skeleton() %}
+    <div class="flex w-96 flex-col gap-4">
+        <div class="skeleton h-32 w-full"></div>
+        <div class="skeleton h-4 w-28"></div>
+        <div class="skeleton h-4 w-full"></div>
+        <div class="skeleton h-4 w-full"></div>
+    </div>
+{% endmacro %}
+
+{% macro priority_color(priority) %}
+    {% if priority == 0 %}
+        badge-info
+    {% elif priority == 1 %}
+        badge-success
+    {% elif priority == 2 %}
+        badge-warning
+    {% elif priority == 3 %}
+        badge-accent
+    {% elif priority == 4 %}
+        badge-error
+    {% endif %}
+{% endmacro %}

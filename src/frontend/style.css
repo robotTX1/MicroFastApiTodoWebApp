@@ -1,0 +1,9 @@
+@import "tailwindcss";
+@source "../resources/templates";
+@plugin "daisyui" {
+    themes: light --default, corporate, dark --prefersdark, dracula;
+}
+
+@utility no-scrollbar {
+    @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
+}
