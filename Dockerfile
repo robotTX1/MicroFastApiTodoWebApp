@@ -21,6 +21,8 @@ COPY src src
 
 COPY --from=node-builder /builder/src/resources/static/css/main.css src/resources/static/css/main.css
 
+RUN uv sync --no-dev --compile-bytecode
+
 EXPOSE 8080
 
-ENTRYPOINT ["uv", "run", "uvicorn", "src.microfastapitodowebapp.main:app", "--no-access-log", "--port", "8080"]
+ENTRYPOINT ["uv", "run", "--no-dev", "uvicorn", "src.microfastapitodowebapp.main:app", "--no-access-log", "--host", "0.0.0.0", "--port", "8080"]
