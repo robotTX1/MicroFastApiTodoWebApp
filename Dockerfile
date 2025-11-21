@@ -25,4 +25,4 @@ RUN uv sync --no-dev --compile-bytecode
 
 EXPOSE 8080
 
-ENTRYPOINT ["uv", "run", "--no-dev", "uvicorn", "src.microfastapitodowebapp.main:app", "--no-access-log", "--host", "0.0.0.0", "--port", "8080"]
+ENTRYPOINT ["uv", "run", "--no-dev", "uvicorn", "src.microfastapitodowebapp.main:app", "--no-access-log", "--host", "0.0.0.0", "--port", "8080", "--proxy-headers", "--forwarded-allow-ips", "*"]
