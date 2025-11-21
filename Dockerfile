@@ -6,7 +6,8 @@ COPY src src
 
 WORKDIR /builder/src/frontend
 
-RUN npm run build
+RUN npm install && \
+    npm run build
 
 FROM python:3.14.0-alpine
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv

@@ -1,0 +1,31 @@
+name: Version bump and tag creation
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  bump-and-tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          version: "latest"
+      - name: Configure Git User
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Bump version and create tag
+        run: |
+          uv tool run bump-my-version bump patch
+      - name: Push changes and tags
+        run: git push --follow-tags origin HEAD
