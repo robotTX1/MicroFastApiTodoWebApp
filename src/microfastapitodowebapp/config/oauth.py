@@ -9,7 +9,7 @@ from microfastapitodowebapp.config.context import request_context
 
 
 async def fetch_token(request: Request):
-    logger.debug("Fetching token from session {}", request.cookies.get("session"))
+    logger.trace("Fetching token from session {}", request.cookies.get("session"))
     token = request.session.get("token")
     return dict(
         access_token=token["access_token"],
@@ -20,7 +20,7 @@ async def fetch_token(request: Request):
 
 
 async def update_token(token, access_token=None, refresh_token=None):
-    logger.debug("Session access token expired")
+    logger.trace("Session access token expired")
     session = request_context.get().session
     userinfo = session["token"]["userinfo"]
     token["userinfo"] = userinfo

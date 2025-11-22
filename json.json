@@ -1,0 +1,42 @@
+{
+  "token": {
+    "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ4SGNHY3NveDQxU1VrOFRUTUNUajZqN2tiRUtDY2RndjRadTBTd1lBdUE0In0.eyJleHAiOjE3NjM4MTM0MTMsImlhdCI6MTc2MzgxMzExMywiYXV0aF90aW1lIjoxNzYzODA5Njc5LCJqdGkiOiIwYTRkOTNiZC00YWEzLTQwMDctYmNlNy0yZGY2MWUwMTJmOTIiLCJpc3MiOiJodHRwczovL2F1dGgucm9ib3R0eC5mcmVlZGRucy5vcmcvcmVhbG1zL2FwcGxpY2F0aW9ucyIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiJlNGMwZWJkOC03NDE0LTRhOGItYTE0NS03YWRjZGQ4ZTE4NmQiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ0b2RvLXNlcnZpY2Utc2VydmVyIiwic2lkIjoiNmQ1ODA2ZTYtYjVjOS00NmY4LTg5MzctMjI2NzBiZGUyNTQ2IiwiYWNyIjoiMCIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwczovL3d3dy50b2RvMi5yb2JvdHR4LmZyZWVkZG5zLm9yZy8qIiwiaHR0cHM6Ly90b2RvMi5yb2JvdHR4LmZyZWVkZG5zLm9yZy8qIiwiaHR0cHM6Ly90b2RvLnJvYm90dHguZnJlZWRkbnMub3JnLyoiLCJodHRwOi8vbG9jYWxob3N0OjgwODEiLCJodHRwczovL3d3dy50b2RvLnJvYm90dHguZnJlZWRkbnMub3JnLyoiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtYXBwbGljYXRpb25zIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6IkNzYWJhIENzw61rb3MiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJyb2JvdHR4IiwiZ2l2ZW5fbmFtZSI6IkNzYWJhIiwibG9jYWxlIjoiaHUiLCJmYW1pbHlfbmFtZSI6IkNzw61rb3MiLCJlbWFpbCI6InJvYm90dHgzQGdtYWlsLmNvbSJ9.OcmSkwjdptwHnDslYeqOP1GHFqjCiyfdn4eXBXiD6yzCAksYkE9LWH5yLNfNYIw5WFaWy1Bj9xrzl4e5TkJ8PLnw31a_CVKUeRtpQDaUJV6Eees1kMa59IipqXQ_B46GDo2uEokjPBzdEFFNy1wfVQr1EoKKb2VHd0KncIWWu_SHuSQiMYPZq09dNGAM4qo51H8JwRB0wW9yDwqh3_uAj-QOXh66NeqKxMsgJDjJA2Xg_aOCgQSfizdWAh7cTRHm-GB6DwZsBsgFXmdueFE7IaoNvPfWq3Ps7cXeHdY-GytqwN8QNAUDaK_iphLFF3JmM80ONepTKnOf-0N8dQmk5Q",
+    "expires_in": 300,
+    "refresh_expires_in": 3600,
+    "refresh_token": "eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIwZGQ2MDY4Zi03MDM1LTQyNDMtODk4Yi03ZmMzZjQwMGVhNDQifQ.eyJleHAiOjE3NjM4MTY3MTMsImlhdCI6MTc2MzgxMzExMywianRpIjoiODdiZWQ5NzYtM2JhMy00YzQ2LWE4YTUtZWMyNzcxNGQ2N2YzIiwiaXNzIjoiaHR0cHM6Ly9hdXRoLnJvYm90dHguZnJlZWRkbnMub3JnL3JlYWxtcy9hcHBsaWNhdGlvbnMiLCJhdWQiOiJodHRwczovL2F1dGgucm9ib3R0eC5mcmVlZGRucy5vcmcvcmVhbG1zL2FwcGxpY2F0aW9ucyIsInN1YiI6ImU0YzBlYmQ4LTc0MTQtNGE4Yi1hMTQ1LTdhZGNkZDhlMTg2ZCIsInR5cCI6IlJlZnJlc2giLCJhenAiOiJ0b2RvLXNlcnZpY2Utc2VydmVyIiwic2lkIjoiNmQ1ODA2ZTYtYjVjOS00NmY4LTg5MzctMjI2NzBiZGUyNTQ2Iiwic2NvcGUiOiJvcGVuaWQgYWNyIHByb2ZpbGUgcm9sZXMgd2ViLW9yaWdpbnMgZW1haWwgYmFzaWMifQ.kwk9dJGfw86u8Gocqh67fPXO10KVNJMAHF1dsVHdgIAPFxWasVazMqA2Yzvb8Na0EfPezq0OytP8BvhI9bAIDg",
+    "token_type": "Bearer",
+    "id_token": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ4SGNHY3NveDQxU1VrOFRUTUNUajZqN2tiRUtDY2RndjRadTBTd1lBdUE0In0.eyJleHAiOjE3NjM4MTM0MTMsImlhdCI6MTc2MzgxMzExMywiYXV0aF90aW1lIjoxNzYzODA5Njc5LCJqdGkiOiI3MjBjYWQ1Ni04NDllLTQwODItYThhMy00ZWY4NDdlMjQ1Y2QiLCJpc3MiOiJodHRwczovL2F1dGgucm9ib3R0eC5mcmVlZGRucy5vcmcvcmVhbG1zL2FwcGxpY2F0aW9ucyIsImF1ZCI6InRvZG8tc2VydmljZS1zZXJ2ZXIiLCJzdWIiOiJlNGMwZWJkOC03NDE0LTRhOGItYTE0NS03YWRjZGQ4ZTE4NmQiLCJ0eXAiOiJJRCIsImF6cCI6InRvZG8tc2VydmljZS1zZXJ2ZXIiLCJub25jZSI6ImxoeE5tSlpQRVUyc2xVTDRzVkI2Iiwic2lkIjoiNmQ1ODA2ZTYtYjVjOS00NmY4LTg5MzctMjI2NzBiZGUyNTQ2IiwiYXRfaGFzaCI6IjQwVjBfeDBKRnY0ZmVNUllGWlNzZnciLCJhY3IiOiIwIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJDc2FiYSBDc8Ota29zIiwicHJlZmVycmVkX3VzZXJuYW1lIjoicm9ib3R0eCIsImdpdmVuX25hbWUiOiJDc2FiYSIsImxvY2FsZSI6Imh1IiwiZmFtaWx5X25hbWUiOiJDc8Ota29zIiwiZW1haWwiOiJyb2JvdHR4M0BnbWFpbC5jb20ifQ.I2UeqYxMWkRKtqA0tDsXOU4IpoGB0j_GlV9ca7BFG_FQW8juUFpz1FzUnadO9VDh8omNa0YWGOKVP3he4W1U1UlMUsYuzBttUz71IOjXV3P5IxwlCDsYQQoEw4km3-2rtsS8Ml6R6s5zDUOUYu0bZYKy6cZy3Nqh4ua2otcv479AknlAWOxpsqXu-rlMH_9bbObk9vVSa8kZRIlvAoMJrfKN0Cxt1X7omEsyf2hMWwAIs10piXNPGKZOE61xKqMvTgYCOMmHeA9nF2z6mZYqgQiTIIBPjkfvPidTgmmnhzfnmehKwRdGDOc50rKE5tFWD1f_Z-doSiiQG3_cuyFn3Q",
+    "not-before-policy": 1745185823,
+    "session_state": "6d5806e6-b5c9-46f8-8937-22670bde2546",
+    "scope": "openid profile email",
+    "expires_at": 1763813413,
+    "userinfo": {
+      "exp": 1763813413,
+      "iat": 1763813113,
+      "auth_time": 1763809679,
+      "jti": "720cad56-849e-4082-a8a3-4ef847e245cd",
+      "iss": "https://auth.robottx.freeddns.org/realms/applications",
+      "aud": "todo-service-server",
+      "sub": "e4c0ebd8-7414-4a8b-a145-7adcdd8e186d",
+      "typ": "ID",
+      "azp": "todo-service-server",
+      "nonce": "lhxNmJZPEU2slUL4sVB6",
+      "sid": "6d5806e6-b5c9-46f8-8937-22670bde2546",
+      "at_hash": "40V0_x0JFv4feMRYFZSsfw",
+      "acr": "0",
+      "email_verified": true,
+      "name": "Csaba Cs\u00edkos",
+      "preferred_username": "robottx",
+      "given_name": "Csaba",
+      "locale": "hu",
+      "family_name": "Cs\u00edkos",
+      "email": "robottx3@gmail.com"
+    },
+    "refresh_expires_at": 1763816713
+  },
+  "__metadata__": {
+    "lifetime": 3600,
+    "created": 1763809673.9904878,
+    "last_access": 1763813244.2007473
+  }
+}
