@@ -23,9 +23,9 @@
         </div>
 
         <div class="flex-1 py-6 space-y-2 overflow-y-auto">
-            {{ nav_link.sidebar('My Task', '/dashboard', 'my_task', request.url.path) }}
-            {{ nav_link.sidebar('Shared Task', '/shared', 'shared_task', request.url.path) }}
-            {{ nav_link.sidebar('All Task', '/all', 'all_task', request.url.path) }}
+            {{ nav_link.sidebar('My Task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="OWN"), 'my_task', request.url.path) }}
+            {{ nav_link.sidebar('Shared Task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="SHARED"), 'shared_task', request.url.path) }}
+            {{ nav_link.sidebar('All Task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="ALL"), 'all_task', request.url.path) }}
             {{ nav_link.sidebar('Stats', '/stats', 'stats', request.url.path, hidden_on_lg=True) }}
             {{ nav_link.sidebar('Settings', '/settings', 'settings', request.url.path) }}
         </div>
