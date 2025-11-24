@@ -15,6 +15,7 @@ dependencies = [
     "loguru>=0.7.3",
     "oci>=2.164.0",
     "starsessions[redis]>=2.2.1",
+    "yarl>=1.22.0",
 ]
 
 [project.scripts]
