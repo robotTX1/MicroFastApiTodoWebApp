@@ -21,7 +21,7 @@ class TodoQuery:
             result["pageSize"] = self.page_size
         return result
 
-class QueryMode(Enum):
+class QueryMode(str, Enum):
     ALL = "ALL",
     SHARED = "SHARED",
     OWN = "OWN"
