@@ -33,7 +33,6 @@ oauth.register(
     name="keycloak",
     client_id=service_config.get("applicationClientId"),
     client_secret=secrets.get(service_config.get("applicationClientSecretName")),
-    server_metadata_url=service_config.get("authorizationServerMetaDataUrl"),
     access_token_url=service_config.get("authorizationServerTokenUri"),
     refresh_token_url=service_config.get("authorizationServerTokenUri"),
     authorize_url=service_config.get("authorizationServerUri"),
