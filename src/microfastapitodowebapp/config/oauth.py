@@ -4,7 +4,7 @@ from authlib.integrations.starlette_client import OAuth
 from loguru import logger
 from starlette.requests import Request
 
-from microfastapitodowebapp.config.configuration import service_config, secrets
+from microfastapitodowebapp.config.configuration import service_config, secrets, is_local_config
 from microfastapitodowebapp.config.context import request_context
 
 
@@ -29,6 +29,14 @@ async def update_token(token, access_token=None, refresh_token=None):
 
 
 oauth = OAuth()
+
+headers = {}
+if not is_local_config():
+    headers = {
+        "X-Forwarded-Proto": "https",
+        "Host": "auth.robottx.hu"
+    }
+
 oauth.register(
     name="keycloak",
     client_id=service_config.get("applicationClientId"),
@@ -44,5 +52,6 @@ oauth.register(
         "scope": "openid email profile",
         "code_challenge_method": "S256",
         "issuer": service_config.get("authorizationServerIssuerUri"),
+        "headers" : headers,
     }
 )
