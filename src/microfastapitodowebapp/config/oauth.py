@@ -38,6 +38,7 @@ oauth.register(
     refresh_token_url=service_config.get("authorizationServerTokenUri"),
     authorize_url=service_config.get("authorizationServerUri"),
     api_base_url=service_config.get("todoApiBaseUrl"),
+    jwks_uri=service_config.get("authorizationServerJwksUri"),
     fetch_token=fetch_token,
     update_token=update_token,
     client_kwargs={
