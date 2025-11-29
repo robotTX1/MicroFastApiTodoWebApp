@@ -2,11 +2,11 @@ from loguru import logger
 from redis.asyncio import Redis, RedisCluster
 from starsessions.stores.redis import RedisStore
 
-from microfastapitodowebapp.config.configuration import service_config, secrets, is_local_profile
+from microfastapitodowebapp.config.configuration import service_config, secrets, is_local_config
 
 valkey_client = None
 
-if is_local_profile():
+if is_local_config():
     logger.debug("Using standalone Valkey configuration")
     valkey_client = Redis(
         host=service_config.get("valkeyHostname"),

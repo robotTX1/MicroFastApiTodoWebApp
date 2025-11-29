@@ -9,11 +9,15 @@ secrets: dict[str, str] = {}
 env_config = Config(".env")
 
 
-def is_local_profile():
-    return env_config.get("PROFILE") == "local"
+def is_local_config():
+    return env_config.get("CONFIG_DIRECTORY") == "local-config"
 
 
-config_directory = "local-config" if is_local_profile() else "config"
+def is_local_secret_provider():
+    return env_config.get("SECRET_PROVIDER") == "local-config"
+
+
+config_directory = env_config.get("CONFIG_DIRECTORY")
 service_config = Config(f"{config_directory}/service.properties")
 
 
@@ -28,7 +32,7 @@ def fetch_secret(secret_name: str, secrets_client: oci.secrets.SecretsClient, va
 
 
 def load_secrets():
-    if is_local_profile():
+    if is_local_secret_provider():
         logger.debug("Loading secrets from local config")
         oauth_config = Config(f"{config_directory}/oauth.properties")
         valkey_config = Config(f"{config_directory}/valkey.properties")
