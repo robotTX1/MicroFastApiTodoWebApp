@@ -34,7 +34,7 @@ headers = {}
 if not is_local_config():
     headers = {
         "X-Forwarded-Proto": "https",
-        "Host": "auth.robottx.hu"
+        "Host": service_config.get("authorizationServerHost")
     }
 
 oauth.register(
