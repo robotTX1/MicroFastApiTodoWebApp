@@ -1,1 +1,3 @@
-<p>Finished: {{ statistics.finished }} Unfinished: {{ statistics.unfinished }} Total: {{ statistics.total }}</p>
+<p id="todo_statistics" hx-swap-oob="outerHTML:#todo_statistics">
+    Finished: {{ statistics.finished }} Unfinished: {{ statistics.unfinished }} Total: {{ statistics.total }}
+</p>

@@ -31,9 +31,14 @@ async def get_partial_todos(request: Request,
                             page_size: Annotated[int | None, Query(alias="pageSize")] = 20):
     query = TodoQuery(search, sort, page_number, page_size)
     todo_response: TodoResponse = await todo_service.get_todos(request, query, mode)
-    return templates.TemplateResponse(
-        request=request, name="partials/_todo_list.html", context={"todos": todo_response.content}
-    )
+    todo_list = templates.get_template("partials/_todo_list.html").render({
+        "todos": todo_response.content,
+    })
+    todo_statistics: TodoStatistics = await statistics_service.get_simple_stats(request, query, mode)
+    todo_stats = templates.get_template("partials/_todo_statistics.html").render({
+        "statistics": todo_statistics,
+    })
+    return HTMLResponse(content=todo_list + todo_stats)
 
 
 @router.get(path="/partials/statistics", name="dashboard_statistics", response_class=HTMLResponse)

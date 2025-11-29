@@ -8,12 +8,10 @@
         <h1 class="text-3xl">Hi {{ name }}</h1>
         <h2 class="text-1xl">Welcome to your dashboard!</h2>
         <a class="link link-secondary" href="{{ url_for('landing') }}">Go to landing</a>
-        <div hx-get="{{ url_for('dashboard_statistics').include_query_params(**request.query_params) }}"
-             hx-trigger="load"
-             hx-swap="outerHTML">
+        <div id="todo_statistics">
             <div class="skeleton h-5 w-54"></div>
         </div>
-        <div hx-get="{{ url_for('dashboard_todos').include_query_params(**request.query_params) }}"
+        <div id="todo_content" hx-get="{{ url_for('dashboard_todos').include_query_params(**request.query_params) }}"
              hx-trigger="load"
              hx-swap="outerHTML">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

@@ -23,9 +23,9 @@
         </div>
 
         <div class="flex-1 py-6 space-y-2 overflow-y-auto">
-            {{ nav_link.sidebar('My Task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="OWN"), 'my_task', request.url.path) }}
-            {{ nav_link.sidebar('Shared Task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="SHARED"), 'shared_task', request.url.path) }}
-            {{ nav_link.sidebar('All Task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="ALL"), 'all_task', request.url.path) }}
+            {{ nav_link.sidebar('My Task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="OWN"), url_for('dashboard_todos').include_query_params(**request.query_params).include_query_params(mode="OWN"), 'my_task', request.url.path) }}
+            {{ nav_link.sidebar('Shared Task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="SHARED"), url_for('dashboard_todos').include_query_params(**request.query_params).include_query_params(mode="SHARED"), 'shared_task', request.url.path) }}
+            {{ nav_link.sidebar('All Task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="ALL"), url_for('dashboard_todos').include_query_params(**request.query_params).include_query_params(mode="ALL"), 'all_task', request.url.path) }}
             {{ nav_link.sidebar('Stats', '/stats', 'stats', request.url.path, hidden_on_lg=True) }}
             {{ nav_link.sidebar('Settings', '/settings', 'settings', request.url.path) }}
         </div>
@@ -37,11 +37,11 @@
 
 
     <div class="md:hidden fixed bottom-0 left-0 right-0 bg-base-100 flex justify-around items-center h-16 pb-safe z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
-        {{ nav_link.mobile('/dashboard', 'my_task') }}
-        {{ nav_link.mobile('/shared', 'shared_task') }}
-        {{ nav_link.mobile('/all', 'all_task') }}
-        {{ nav_link.mobile('/stats', 'stats') }}
-        {{ nav_link.mobile('/settings', 'settings') }}
-        {{ nav_link.mobile('/logout', 'logout', is_logout=True) }}
+        {{ nav_link.mobile(url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="OWN"), url_for('dashboard_todos').include_query_params(**request.query_params).include_query_params(mode="OWN"), 'my_task') }}
+        {{ nav_link.mobile(url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="SHARED"), url_for('dashboard_todos').include_query_params(**request.query_params).include_query_params(mode="SHARED"), 'shared_task') }}
+        {{ nav_link.mobile(url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="ALL"), url_for('dashboard_todos').include_query_params(**request.query_params).include_query_params(mode="ALL"), 'all_task') }}
+        {{ nav_link.mobile('/stats', '/stats', 'stats') }}
+        {{ nav_link.mobile('/settings', '/settings', 'settings') }}
+        {{ nav_link.mobile('/logout', '/logout', 'logout', is_logout=True) }}
     </div>
 </nav>
