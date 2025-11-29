@@ -42,6 +42,7 @@ oauth.register(
     update_token=update_token,
     client_kwargs={
         "scope": "openid email profile",
-        "code_challenge_method": "S256"
+        "code_challenge_method": "S256",
+        "issuer": service_config.get("authorizationServerIssuerUri"),
     }
 )
