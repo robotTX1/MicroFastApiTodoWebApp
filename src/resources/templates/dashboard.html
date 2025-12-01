@@ -4,22 +4,28 @@
 {% block title %}Protected Page{% endblock %}
 
 {% block main %}
-    <div id="content" class="flex flex-col items-center min-h-screen">
-        <h1 class="text-3xl">Hi {{ name }}</h1>
-        <h2 class="text-1xl">Welcome to your dashboard!</h2>
-        <a class="link link-secondary" href="{{ url_for('landing') }}">Go to landing</a>
-        <div id="todo_statistics">
-            <div class="skeleton h-5 w-54"></div>
-        </div>
-        <div id="todo_content" hx-get="{{ url_for('dashboard_todos').include_query_params(**request.query_params) }}"
-             hx-trigger="load"
-             hx-swap="outerHTML">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {% for foo in range(16) %}
-                    <div class="m-2">
-                        {{ todo_skeleton() }}
+    <div class="flex h-screen w-full">
+        {% include 'components/_navbar.html' %}
+        <div class="flex-1 overflow-y-auto no-scrollbar relative w-full h-full mb-16 md:mb-0 p-4 md:p-8">
+            <div id="content" class="flex flex-col items-center min-h-screen">
+                <h1 class="text-3xl">Hi {{ name }}</h1>
+                <h2 class="text-1xl">Welcome to your dashboard!</h2>
+                <a class="link link-secondary" href="{{ url_for('landing') }}">Go to landing</a>
+                <div id="todo_statistics">
+                    <div class="skeleton h-5 w-54"></div>
+                </div>
+                <div id="todo_content"
+                     hx-get="{{ url_for('dashboard_todos').include_query_params(**request.query_params) }}"
+                     hx-trigger="load"
+                     hx-swap="outerHTML">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {% for foo in range(16) %}
+                            <div class="m-2">
+                                {{ todo_skeleton() }}
+                            </div>
+                        {% endfor %}
                     </div>
-                {% endfor %}
+                </div>
             </div>
         </div>
     </div>

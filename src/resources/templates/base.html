@@ -10,13 +10,10 @@
 </head>
 
 <body class="bg-base-300 text-base-content overflow-hidden">
-    <div class="flex h-screen w-full">
-        {% include 'components/_navbar.html' %}
-        <main class="flex-1 overflow-y-auto no-scrollbar relative w-full h-full mb-16 md:mb-0 p-4 md:p-8">
-            {% block main %}
-                Default content
-            {% endblock %}
-        </main>
-    </div>
+    <main>
+        {% block main %}
+            Default content
+        {% endblock %}
+    </main>
 </body>
 </html>
