@@ -1,45 +1,74 @@
 {% import 'components/_macros.html' as macros %}
 {% import 'components/_nav_link.html' as nav_link with context %}
 
-<nav x-data="{ collapsed: false }"
+<nav x-data="{
+        collapsed: false,
+        activeUrl: '{{ request.url }}',
+        isLogout: 'False',
+
+        checkActive(sidebarLink) {
+            const current = new URL(this.activeUrl, window.location.origin);
+            const target = new URL(sidebarLink, window.location.origin);
+
+            if (current.pathname !== target.pathname) return false;
+
+            const targetMode = target.searchParams.get('mode');
+            if (targetMode) {
+                let currentMode = current.searchParams.get('mode');
+                if (current.pathname.includes('/dashboard') && !currentMode) {
+                    currentMode = 'OWN';
+                }
+                return currentMode === targetMode;
+            }
+
+            return true;
+        }
+     }"
      class="flex-shrink-0 overflow-y-auto z-50 font-sans">
 
     <div class="hidden md:flex flex-col h-screen bg-base-100 transition-all duration-300 ease-in-out"
-         :class="collapsed ? 'w-20' : 'w-48'">
+         :class="collapsed ? 'w-18' : 'w-48'">
 
         <div class="flex items-center h-16 px-4"
              :class="collapsed ? 'justify-center' : 'justify-between'">
 
-            <span class="font-bold text-lg text-base-content truncate" x-show="!collapsed" x-transition>
+            <span class="select-none font-bold text-lg text-base-content truncate transition-all duration-200"
+                  :class="collapsed ? 'hidden' : 'visible'">
                 Todo App
             </span>
 
             <button @click="collapsed = !collapsed"
                     class="p-1 rounded hover:bg-base-200 focus:outline-none text-base-content/70 hover:text-base-content cursor-pointer">
-                <span class="transition-transform duration-200 group-hover:scale-110">
+                <span class="transition-all duration-200 group-hover:scale-110"
+                      :class="!collapsed ? 'visible' : 'hidden'">
                     {{ macros.render_icon('collapse') }}
+               </span>
+                <span class="transition-all duration-200 group-hover:scale-110"
+                      :class="collapsed ? 'visible' : 'hidden'">
+                    {{ macros.render_icon('open') }}
                </span>
             </button>
         </div>
 
         <div class="flex-1 py-6 space-y-2 overflow-y-auto">
-            {{ nav_link.sidebar('My Task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="OWN", pageNumber=0), url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(mode="OWN", pageNumber=0), 'my_task', request.url.path) }}
-            {{ nav_link.sidebar('Shared Task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="SHARED", pageNumber=0), url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(mode="SHARED", pageNumber=0), 'shared_task', request.url.path) }}
-            {{ nav_link.sidebar('All Task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="ALL", pageNumber=0), url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(mode="ALL", pageNumber=0), 'all_task', request.url.path) }}
-            {{ nav_link.sidebar('Stats', '/stats', 'stats', request.url.path, hidden_on_lg=True) }}
-            {{ nav_link.sidebar('Settings', '/settings', 'settings', request.url.path) }}
+            {{ nav_link.sidebar('My Task', 'my_task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="OWN", pageNumber=0), url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(mode="OWN", pageNumber=0)) }}
+            {{ nav_link.sidebar('Shared Task', 'shared_task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="SHARED", pageNumber=0), url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(mode="SHARED", pageNumber=0)) }}
+            {{ nav_link.sidebar('All Task', 'all_task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="ALL", pageNumber=0), url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(mode="ALL", pageNumber=0)) }}
+            {{ nav_link.sidebar('Stats', 'stats', '/stats', '/stats') }}
+            {{ nav_link.sidebar('Settings', 'settings', '/settings', '/settings') }}
         </div>
 
         <div class="py-4">
-            {{ nav_link.sidebar('Logout', '/logout', 'logout', request.url.path, is_logout=True) }}
+            {{ nav_link.sidebar('Logout', 'logout', '/logout', '/logout', is_logout=True) }}
         </div>
     </div>
 
 
     <div class="md:hidden fixed bottom-0 left-0 right-0 bg-base-100 flex justify-around items-center h-16 pb-safe z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
-        {{ nav_link.mobile(url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="OWN"), url_for('dashboard_todos').include_query_params(**request.query_params).include_query_params(mode="OWN"), 'my_task') }}
-        {{ nav_link.mobile(url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="SHARED"), url_for('dashboard_todos').include_query_params(**request.query_params).include_query_params(mode="SHARED"), 'shared_task') }}
-        {{ nav_link.mobile(url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="ALL"), url_for('dashboard_todos').include_query_params(**request.query_params).include_query_params(mode="ALL"), 'all_task') }}
+        {{ nav_link.mobile(url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="OWN", pageNumber=0), url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(mode="OWN", pageNumber=0), 'my_task') }}
+        {{ nav_link.mobile(url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="SHARED", pageNumber=0), url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(mode="SHARED", pageNumber=0), 'shared_task') }}
+        {{ nav_link.mobile(url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="ALL", pageNumber=0), url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(mode="ALL", pageNumber=0), 'all_task') }}
+        {{ nav_link.mobile_add('/add', '/add') }}
         {{ nav_link.mobile('/stats', '/stats', 'stats') }}
         {{ nav_link.mobile('/settings', '/settings', 'settings') }}
         {{ nav_link.mobile('/logout', '/logout', 'logout', is_logout=True) }}
