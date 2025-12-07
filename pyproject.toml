@@ -1,6 +1,6 @@
 [project]
 name = "microfastapitodowebapp"
-version = "1.0.21"
+version = "1.0.22"
 description = "Micro FastAPI Todo Web App"
 readme = "README.md"
 authors = [
@@ -26,7 +26,7 @@ requires = ["uv_build>=0.9.8,<0.10.0"]
 build-backend = "uv_build"
 
 [tool.bumpversion]
-current_version = "1.0.21"
+current_version = "1.0.22"
 parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)"
 serialize = ["{major}.{minor}.{patch}"]
 search = "version = \"{current_version}\""
