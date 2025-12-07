@@ -15,10 +15,15 @@ router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
 @router.get(path="", name="dashboard", response_class=HTMLResponse)
 async def get_landing_page(request: Request):
-    token = request.session["token"]
-    userinfo = token["userinfo"]
     return templates.TemplateResponse(
-        request=request, name="dashboard.html", context={"name": userinfo["given_name"]}
+        request=request, name="dashboard/index.html"
+    )
+
+
+@router.get(path="/partials/content", name="dashboard_content", response_class=HTMLResponse)
+async def get_partial_statistics(request: Request):
+    return templates.TemplateResponse(
+        request=request, name="dashboard/content.html"
     )
 
 
@@ -31,14 +36,10 @@ async def get_partial_todos(request: Request,
                             page_size: Annotated[int | None, Query(alias="pageSize")] = 20):
     query = TodoQuery(search, sort, page_number, page_size)
     todo_response: TodoResponse = await todo_service.get_todos(request, query, mode)
-    todo_list = templates.get_template("partials/_todo_list.html").render({
-        "todos": todo_response.content,
-    })
-    todo_statistics: TodoStatistics = await statistics_service.get_simple_stats(request, query, mode)
-    todo_stats = templates.get_template("partials/_todo_statistics.html").render({
-        "statistics": todo_statistics,
-    })
-    return HTMLResponse(content=todo_list + todo_stats)
+    return templates.TemplateResponse(
+        request=request, name="partials/_todo_list.html",
+        context={"todos": todo_response.content, "page": todo_response.page}
+    )
 
 
 @router.get(path="/partials/statistics", name="dashboard_statistics", response_class=HTMLResponse)

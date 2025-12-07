@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% from "components/_macros.html" import todo_skeleton %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block main %}
+    {% include 'components/_navbar.html' %}
+    <div class="flex flex-col w-full">
+        {% include 'components/_header.html' %}
+        <div class="flex-1 overflow-y-auto">
+            {% include 'dashboard/content.html' %}
+        </div>
+    </div>
+{% endblock %}

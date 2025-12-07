@@ -3,7 +3,7 @@
 {% macro sidebar(label, url, htmx_url, icon, is_logout=False, hidden_on_lg=False) %}
     {% set is_active = current_path == url %}
 
-    <a href="{{ url }}" hx-get="{{ htmx_url }}" hx-target="#todo_content" hx-swap="outerHTML" hx-replace-url="{{ url }}"
+    <a href="{{ url }}" hx-get="{{ htmx_url }}" hx-target="#content" hx-swap="outerHTML" hx-replace-url="{{ url }}"
        class="relative overflow-hidden flex items-center transition-all duration-300 group
               {% if hidden_on_lg %}lg:hidden{% endif %}
               {% if is_active %}
@@ -48,7 +48,7 @@
 {% macro mobile(url, htmx_url, icon, is_logout=False) %}
     {% set is_active = request.url.path == url %}
 
-    <a href="{{ url }}" hx-get="{{ htmx_url }}" hx-target="#todo_content" hx-swap="outerHTML" hx-replace-url="{{ url }}"
+    <a href="{{ url }}" hx-get="{{ htmx_url }}" hx-target="#content" hx-swap="outerHTML" hx-replace-url="{{ url }}"
        class="flex flex-col items-center justify-center w-full h-full text-xs transition-all border-l-0 border-b-4
               {% if is_active %}
                 bg-neutral
