@@ -1,0 +1,25 @@
+{% from "components/_macros.html" import todo_skeleton %}
+
+<div id="content" class="flex flex-col">
+    <div id="todo_statistics" class="text-center"
+         hx-get="{{ url_for('dashboard_statistics').include_query_params(**request.query_params) }}"
+         hx-trigger="load"
+         hx-swap="innerHTML">
+        <div class="skeleton h-5 w-54"></div>
+    </div>
+    <div class="flex justify-center w-full p-4">
+        <div class="grid w-full justify-center gap-1 grid-cols-[repeat(auto-fill,minmax(24rem,1fr))]"
+             hx-get="{{ url_for('dashboard_todos').include_query_params(**request.query_params) }}"
+             hx-trigger="load"
+             hx-swap="innerHTML">
+            {% for i in range(16) %}
+                <div class="w-full">
+                    {{ todo_skeleton() }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div id="pagination" class="flex justify-center p-4">
+        <div class="skeleton h-5 w-54"></div>
+    </div>
+</div>

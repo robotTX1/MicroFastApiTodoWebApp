@@ -2,10 +2,10 @@
 {% import 'components/_nav_link.html' as nav_link with context %}
 
 <nav x-data="{ collapsed: false }"
-     class="relative z-50 font-sans">
+     class="flex-shrink-0 overflow-y-auto z-50 font-sans">
 
     <div class="hidden md:flex flex-col h-screen bg-base-100 transition-all duration-300 ease-in-out"
-         :class="collapsed ? 'w-20' : 'w-64'">
+         :class="collapsed ? 'w-20' : 'w-48'">
 
         <div class="flex items-center h-16 px-4"
              :class="collapsed ? 'justify-center' : 'justify-between'">
@@ -23,9 +23,9 @@
         </div>
 
         <div class="flex-1 py-6 space-y-2 overflow-y-auto">
-            {{ nav_link.sidebar('My Task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="OWN"), url_for('dashboard_todos').include_query_params(**request.query_params).include_query_params(mode="OWN"), 'my_task', request.url.path) }}
-            {{ nav_link.sidebar('Shared Task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="SHARED"), url_for('dashboard_todos').include_query_params(**request.query_params).include_query_params(mode="SHARED"), 'shared_task', request.url.path) }}
-            {{ nav_link.sidebar('All Task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="ALL"), url_for('dashboard_todos').include_query_params(**request.query_params).include_query_params(mode="ALL"), 'all_task', request.url.path) }}
+            {{ nav_link.sidebar('My Task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="OWN", pageNumber=0), url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(mode="OWN", pageNumber=0), 'my_task', request.url.path) }}
+            {{ nav_link.sidebar('Shared Task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="SHARED", pageNumber=0), url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(mode="SHARED", pageNumber=0), 'shared_task', request.url.path) }}
+            {{ nav_link.sidebar('All Task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="ALL", pageNumber=0), url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(mode="ALL", pageNumber=0), 'all_task', request.url.path) }}
             {{ nav_link.sidebar('Stats', '/stats', 'stats', request.url.path, hidden_on_lg=True) }}
             {{ nav_link.sidebar('Settings', '/settings', 'settings', request.url.path) }}
         </div>
