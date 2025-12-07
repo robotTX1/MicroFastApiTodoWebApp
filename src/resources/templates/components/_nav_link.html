@@ -1,44 +1,35 @@
 {% import 'components/_macros.html' as macros %}
 
-{% macro sidebar(label, url, htmx_url, icon, is_logout=False, hidden_on_lg=False) %}
-    {% set is_active = current_path == url %}
+{% macro sidebar(label, icon, url, htmx_url, is_logout=False) %}
+    {% set color_active   = 'text-error' if is_logout else 'text-neutral-content' %}
+    {% set color_inactive = 'hover:text-error' if is_logout else 'hover:text-base-content' %}
 
-    <a href="{{ url }}" hx-get="{{ htmx_url }}" hx-target="#content" hx-swap="outerHTML" hx-replace-url="{{ url }}"
+    <a href="{{ url }}"
+       hx-get="{{ htmx_url }}"
+       hx-target="#content"
+       hx-swap="outerHTML"
+       hx-replace-url="{{ url }}"
+       @click="activeUrl = '{{ url }}'"
+       :class="[
+            checkActive('{{ url }}')
+                ? 'bg-neutral {{ color_active }}'
+                : 'text-base-content/70 hover:bg-base-200 {{ color_inactive }}',
+            {
+                'justify-center w-12 h-12 mx-auto rounded-md p-0': collapsed,
+                'mx-2 px-4 py-3 rounded-md': !collapsed
+            }
+       ]"
        class="relative overflow-hidden flex items-center transition-all duration-300 group
-              {% if hidden_on_lg %}lg:hidden{% endif %}
-              {% if is_active %}
-                bg-neutral
-                {{ 'text-error' if is_logout else 'text-neutral-content' }}
-              {% else %}
-                text-base-content/70 hover:bg-base-200 hover:text-base-content
-                {{ 'hover:text-error' if is_logout else '' }}
-              {% endif %}"
-       :class="collapsed
-            ? 'justify-center w-12 h-12 mx-auto rounded-xl p-0'
-            : 'mx-2 px-4 py-3 rounded-r-xl rounded-l-sm'"
+       {{ 'mx-2 px-4 py-3 rounded-md' if not collapsed else '' }}"
        title="{{ label }}">
 
-        {% if is_active %}
-        <span class="absolute left-0 top-0 bottom-0 w-1 {{ 'bg-error' if is_logout else 'bg-primary' }} rounded-l-sm"
-              x-show="!collapsed">
-        </span>
-        {% endif %}
-
-        {% if not is_active %}
-        <span class="absolute left-0 top-0 bottom-0 w-1 {{ 'bg-error/50' if is_logout else 'bg-primary/50' }} rounded-l-sm opacity-0 group-hover:opacity-100 transition-opacity"
-              x-show="!collapsed">
-        </span>
-        {% endif %}
-
-        <span class="transition-transform duration-200 {% if not is_active %}group-hover:scale-110{% endif %}">
+        <span class="transition-transform duration-200"
+              :class="{ 'group-hover:scale-110': !checkActive('{{ url }}') }">
             {{ macros.render_icon(icon) }}
         </span>
 
-        <span class="ml-4 font-medium whitespace-nowrap"
-              x-show="!collapsed"
-              x-transition:enter="transition ease-out duration-100"
-              x-transition:enter-start="opacity-0"
-              x-transition:enter-end="opacity-100">
+        <span class="ml-4 font-medium whitespace-nowrap transition-all"
+              :class="collapsed ? 'collapse' : 'visible'">
             {{ label }}
         </span>
     </a>
@@ -46,18 +37,39 @@
 
 
 {% macro mobile(url, htmx_url, icon, is_logout=False) %}
-    {% set is_active = request.url.path == url %}
+    {% set color_active   = 'text-error' if is_logout else 'text-neutral-content' %}
+    {% set color_inactive = 'hover:text-error' if is_logout else 'hover:text-base-content' %}
 
-    <a href="{{ url }}" hx-get="{{ htmx_url }}" hx-target="#content" hx-swap="outerHTML" hx-replace-url="{{ url }}"
-       class="flex flex-col items-center justify-center w-full h-full text-xs transition-all border-l-0 border-b-4
-              {% if is_active %}
-                bg-neutral
-                {{ 'text-error border-error' if is_logout else 'text-neutral-content border-primary' }}
-              {% else %}
-                text-base-content/60 border-transparent hover:bg-base-200 hover:text-base-content
-                {{ 'hover:text-error hover:border-error/50' if is_logout else 'hover:border-primary/50' }}
-              {% endif %}">
-        <div class="mb-1">
+    <a href="{{ url }}"
+       hx-get="{{ htmx_url }}"
+       hx-target="#content"
+       hx-swap="outerHTML"
+       hx-replace-url="{{ url }}"
+       @click="activeUrl = '{{ url }}'"
+       :class="checkActive('{{ url }}')
+            ? 'bg-neutral {{ color_active }}'
+            : 'text-base-content/60 hover:bg-base-200 {{ color_inactive }}'"
+       class="flex items-center justify-center rounded-full transition-all duration-300 h-10 w-10">
+        <div class="transform transition-transform duration-200 active:scale-95">
+            {{ macros.render_icon(icon) }}
+        </div>
+    </a>
+{% endmacro %}
+
+
+{% macro mobile_add(url, htmx_url, icon='add') %}
+    <a href="{{ url }}"
+       hx-get="{{ htmx_url }}"
+       hx-target="#content"
+       hx-swap="outerHTML"
+       hx-replace-url="{{ url }}"
+       @click="activeUrl = '{{ url }}'"
+       :class="checkActive('{{ url }}')
+            ? 'bg-primary text-neutral-content border-primary shadow-lg scale-105'
+            : 'bg-transparent text-base-content/60 border-primary/40 hover:border-primary hover:bg-primary/10'"
+       class="flex items-center justify-center border-2 rounded-full transition-all duration-300 h-12 w-12">
+
+        <div class="transform transition-transform duration-200 active:scale-95">
             {{ macros.render_icon(icon) }}
         </div>
     </a>
