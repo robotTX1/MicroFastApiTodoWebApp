@@ -17,7 +17,7 @@ if is_local_config():
 else:
     logger.debug("Using cluster Valkey configuration")
     valkey_client = RedisCluster(
-        ssl=service_config.get("valkeySsl"),
+        ssl=str(service_config.get("valkeySsl")).lower() == "true",
         host=service_config.get("valkeyHostname"),
         port=service_config.get("valkeyPort"),
         username=secrets.get(service_config.get("valkeyUsernameSecretName")),
