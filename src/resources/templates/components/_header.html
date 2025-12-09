@@ -1,3 +1,5 @@
+{% import 'components/_macros.html' as macros %}
+
 <div class="flex flex-col items-center md:flex-row md:justify-between p-4">
     <h1 class="font-bold text-3xl text-primary">Dashboard</h1>
     <label class="input">
@@ -15,10 +17,11 @@
         <kbd class="kbd kbd-sm">⌘</kbd>
         <kbd class="kbd kbd-sm">K</kbd>
     </label>
-    <button class="btn btn-primary hidden md:flex">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-            <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"></path>
-        </svg>
+    <button class="btn btn-primary hidden md:flex"
+            hx-get="/dashboard/partials/drawer/new"
+            hx-target="#drawer-container"
+            hx-swap="innerHTML">
+        {{ macros.render_icon('add') }}
         New Todo
     </button>
 </div>

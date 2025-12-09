@@ -3,7 +3,7 @@ from yarl import URL
 
 from microfastapitodowebapp.config.oauth import oauth
 from microfastapitodowebapp.domain.query import TodoQuery, QueryMode
-from microfastapitodowebapp.model.todo_request import TodoCreateRequest, TodoUpdateRequest, TodoPatchRequest
+from microfastapitodowebapp.model.todo_request import TodoCreateRequest, TodoUpdateRequest, TodoPatchRequest, TodoPatchNoDateRequest
 from microfastapitodowebapp.model.todo_response import TodoResponse, Todo
 from microfastapitodowebapp.util.url_helper import build_url
 
@@ -38,7 +38,7 @@ async def update_todo(request: Request, todo_id: int, todo: TodoUpdateRequest) -
     return Todo.from_dict(response.json())
 
 
-async def patch_todo(request: Request, todo_id: int, todo: TodoPatchRequest) -> Todo:
+async def patch_todo(request: Request, todo_id: int, todo: TodoPatchRequest | TodoPatchNoDateRequest) -> Todo:
     url = URL.build(path=f"{BASE_PATH}/{todo_id}")
     response = await oauth.keycloak.patch(str(url), json=todo.model_dump(mode="json"), request=request)
     response.raise_for_status()
