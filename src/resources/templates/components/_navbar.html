@@ -56,12 +56,12 @@
             {{ nav_link.sidebar('My Task', 'my_task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="OWN", pageNumber=0), url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(mode="OWN", pageNumber=0)) }}
             {{ nav_link.sidebar('Shared Task', 'shared_task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="SHARED", pageNumber=0), url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(mode="SHARED", pageNumber=0)) }}
             {{ nav_link.sidebar('All Task', 'all_task', url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="ALL", pageNumber=0), url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(mode="ALL", pageNumber=0)) }}
-            {{ nav_link.sidebar('Stats', 'stats', '/stats', '/stats') }}
-            {{ nav_link.sidebar('Settings', 'settings', '/settings', '/settings') }}
+{#            {{ nav_link.sidebar('Statistics', 'stats', url_for('statistics'), url_for('statistics')) }}#}
+{#            {{ nav_link.sidebar('Settings', 'settings', '/settings', '/settings') }}#}
         </div>
 
         <div class="py-4">
-            {{ nav_link.sidebar('Logout', 'logout', '/logout', '/logout', is_logout=True) }}
+            {{ nav_link.sidebar('Logout', 'logout', url_for('logout'), url_for('logout'), is_logout=True) }}
         </div>
     </div>
 
@@ -71,8 +71,10 @@
         {{ nav_link.mobile(url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="SHARED", pageNumber=0), url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(mode="SHARED", pageNumber=0), 'shared_task') }}
         {{ nav_link.mobile(url_for('dashboard').include_query_params(**request.query_params).include_query_params(mode="ALL", pageNumber=0), url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(mode="ALL", pageNumber=0), 'all_task') }}
         {{ nav_link.mobile_add('/dashboard/partials/drawer/new', '#drawer-container', 'innerHTML') }}
-        {{ nav_link.mobile('/stats', '/stats', 'stats') }}
-        {{ nav_link.mobile('/settings', '/settings', 'settings') }}
-        {{ nav_link.mobile('/logout', '/logout', 'logout', is_logout=True) }}
+        <div class="h-12 w-12"></div>
+        <div class="h-12 w-12"></div>
+{#        {{ nav_link.mobile('/stats', '/stats', 'stats') }}#}
+{#        {{ nav_link.mobile('/settings', '/settings', 'settings') }}#}
+        {{ nav_link.mobile(url_for('logout'), url_for('logout'), 'logout', is_logout=True) }}
     </div>
 </nav>

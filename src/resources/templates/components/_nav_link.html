@@ -5,10 +5,12 @@
     {% set color_inactive = 'hover:text-error' if is_logout else 'hover:text-base-content' %}
 
     <a href="{{ url }}"
+        {% if not is_logout %}
        hx-get="{{ htmx_url }}"
        hx-target="#content"
        hx-swap="outerHTML"
-       hx-replace-url="{{ url }}"
+       hx-include="[name='search']"
+        {% endif %}
        @click="
             activeUrl = '{{ url }}';
             lastActiveUrl = '{{ url }}';
@@ -44,10 +46,12 @@
     {% set color_inactive = 'hover:text-error' if is_logout else 'hover:text-base-content' %}
 
     <a href="{{ url }}"
+        {% if not is_logout %}
        hx-get="{{ htmx_url }}"
        hx-target="#content"
-       hx-swap="outerHTML"
-       hx-replace-url="{{ url }}"
+       hx-swap="outerHTML show:top"
+       hx-include="[name='search']"
+        {% endif %}
        @click="
             activeUrl = '{{ url }}';
             lastActiveUrl = '{{ url }}';

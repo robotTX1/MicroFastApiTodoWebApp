@@ -1,4 +1,3 @@
-from asyncio import sleep
 from typing import Annotated
 
 from fastapi import APIRouter, Query, Depends
@@ -39,9 +38,11 @@ async def get_partial_todos(request: Request,
                             page_size: Annotated[int | None, Query(alias="pageSize")] = 20):
     query = TodoQuery(search, sort, page_number, page_size)
     todo_response: TodoResponse = await todo_service.get_todos(request, query, mode)
+    new_url = str(request.url_for("dashboard").include_query_params(**request.query_params))
     return templates.TemplateResponse(
         request=request, name="partials/_todo_list.html",
-        context={"todos": todo_response.content, "page": todo_response.page}
+        context={"todos": todo_response.content, "page": todo_response.page},
+        headers={"HX-Push-Url": new_url}
     )
 
 
