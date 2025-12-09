@@ -1,0 +1,523 @@
+{% import 'components/_macros.html' as macros %}
+
+{% macro drawer_sidebar(todo=None, shares=None) %}
+    {% set isEdit = todo is not none %}
+
+    <div class="drawer drawer-end z-40">
+        <input id="my-drawer-1" type="checkbox" class="drawer-toggle" onchange="resetDrawerView()"/>
+
+        <div class="drawer-side">
+            <label for="my-drawer-1" aria-label="close sidebar" class="drawer-overlay"></label>
+
+            <form id="todo-form"
+                  hx-post="{{ '/dashboard/todos/update/' ~ todo.id if isEdit else '/dashboard/todos/create' }}"
+                  hx-target="#content"
+                  hx-swap="innerHTML"
+                  class="h-full w-full md:w-auto">
+                <div class="menu bg-base-100 text-base-content min-h-full w-full md:w-96 p-6 pb-24 md:pb-6 flex flex-col relative overflow-hidden">
+                    {{ _view_main_form(todo, isEdit, shares) }}
+                    {{ _view_categories(todo, isEdit) }}
+                    {{ _view_shares(todo, isEdit, shares) }}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {{ _drawer_scripts() }}
+{% endmacro %}
+
+{% macro _view_main_form(todo, isEdit, shares) %}
+    {% set priority_map = {0: 'Not Required', 1: 'Low', 2: 'Normal', 3: 'High', 4: 'Critical'} %}
+
+    <div id="view-main" class="drawer-view flex flex-col h-full gap-5 transition-opacity duration-300">
+        <div class="flex justify-between items-center mb-2">
+            <h2 class="font-bold text-2xl text-base-content">
+                {{ "Edit Todo" if isEdit else "New Todo" }}
+            </h2>
+        </div>
+
+        <div class="flex-1 overflow-y-auto flex flex-col gap-4 pr-2 relative h-full">
+            {% if isEdit %}
+                <input type="hidden" name="id" value="{{ todo.id }}">
+            {% endif %}
+
+            <div id="hidden-inputs-container">
+                {% if isEdit and todo.categories %}
+                    {% for cat in todo.categories %}
+                        <input type="hidden" name="categories" value="{{ cat }}" id="hidden-cat-{{ cat }}">
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div id="hidden-shares-container">
+                {% if isEdit and shares and shares.content %}
+                    {% for share_item in shares.content %}
+                        {% set safe_id = share_item.email | replace('@', '_') | replace('.', '_') | replace('-', '_') %}
+                        <input type="hidden" name="shares_email" value="{{ share_item.email }}"
+                               id="hidden-share-email-{{ safe_id }}">
+                        <input type="hidden" name="shares_access_level" value="{{ share_item.access_level }}"
+                               id="hidden-share-role-{{ safe_id }}">
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="form-control w-full">
+                <label class="label cursor-pointer justify-start gap-3 p-0">
+                    <input type="checkbox" name="completed"
+                            {{ 'checked' if isEdit and todo.completed else '' }}
+                           class="checkbox checkbox-primary focus:outline-none focus:ring-0"/>
+                    <span class="label-text text-base font-medium">Completed</span>
+                </label>
+            </div>
+
+            <div class="form-control w-full">
+                <label class="label mb-1"><span class="label-text">Title</span></label>
+                <input type="text" name="title"
+                       value="{{ todo.title if isEdit else '' }}"
+                       placeholder="New Todo"
+                       class="input input-bordered w-full bg-base-200 focus:outline-none focus:ring-0"
+                       required/>
+            </div>
+
+            <div class="form-control w-full">
+                <label class="label mb-1"><span class="label-text">Description</span></label>
+                <textarea name="description"
+                          class="textarea textarea-bordered h-24 w-full bg-base-200 focus:outline-none focus:ring-0"
+                          placeholder="Description...">{{ todo.description if isEdit else '' }}</textarea>
+            </div>
+
+            <div class="form-control w-full">
+                <label class="label mb-1"><span class="label-text">Priority</span></label>
+                <select name="priority"
+                        class="select select-bordered w-full bg-base-200 focus:ring-0 !outline-none focus:!outline-0 focus-visible:!outline-0">
+                    {% for val, label in priority_map.items() %}
+                        <option value="{{ val }}" {{ 'selected' if isEdit and todo.priority == val else '' }}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <div class="flex justify-between items-end mb-1">
+                    <label class="label p-0"><span class="label-text">Deadline</span></label>
+                    <button type="button" class="btn btn-xs btn-ghost text-error" onclick="resetDeadline()">
+                        Clear
+                    </button>
+                </div>
+                <div class="flex gap-4">
+                    <div class="form-control w-1/2">
+                        <input type="date" name="deadline_date" id="input-deadline-date"
+                               value="{{ todo.deadline.strftime('%Y-%m-%d') if isEdit and todo.deadline else '' }}"
+                               class="input input-bordered w-full bg-base-200 !outline-none focus:!outline-0 focus-visible:!outline-0 focus:ring-0"/>
+                    </div>
+                    <div class="form-control w-1/2">
+                        <input type="time" name="deadline_time" id="input-deadline-time"
+                               value="{{ todo.deadline.strftime('%H:%M') if isEdit and todo.deadline else '' }}"
+                               class="input input-bordered w-full bg-base-200 !outline-none focus:!outline-0 focus-visible:!outline-0 focus:ring-0"/>
+                    </div>
+                </div>
+            </div>
+
+            <div onclick="snapshotState('categories'); switchView('view-categories')"
+                 class="bg-base-200 p-4 rounded-lg cursor-pointer hover:bg-base-300 transition-colors mt-2">
+                <div class="flex justify-between items-center">
+                    <span class="font-bold text-sm">Manage Categories</span>
+                    {{ macros.render_icon('arrow_forward') }}
+                </div>
+                <div class="flex flex-wrap gap-2 mt-2">
+                    <div id="category-preview-list" class="contents">
+                        {% if isEdit and todo.categories %}
+                            {% for cat in todo.categories %}
+                                <span class="badge badge-outline badge-primary badge-sm"
+                                      id="prev-cat-{{ cat }}">{{ cat }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <span id="categories-summary-text"
+                          class="text-xs text-base-content/50 {{ 'hidden' if isEdit and todo.categories else '' }}">
+                        No categories
+                    </span>
+                </div>
+            </div>
+
+            <div onclick="snapshotState('shares'); switchView('view-shares')"
+                 class="bg-base-200 p-4 rounded-lg cursor-pointer hover:bg-base-300 transition-colors">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="font-bold text-sm">Manage Shares</span>
+                    {{ macros.render_icon('arrow_forward') }}
+                </div>
+                <p id="shares-summary-text" class="text-xs text-base-content/70">
+                    {% if isEdit and shares and shares.content %}
+                        Shared with {{ shares.content|length }} people
+                    {% else %}
+                        Manage access
+                    {% endif %}
+                </p>
+            </div>
+
+            {% if isEdit %}
+                <div class="pt-2">
+                    <button type="button"
+                            class="btn btn-outline btn-error w-full flex items-center gap-2"
+                            hx-delete="/dashboard/todos/{{ todo.id }}"
+                            hx-target="#content"
+                            hx-swap="outerHTML"
+                            hx-confirm="Are you sure you want to delete this Todo? This action cannot be undone."
+                            onclick="document.getElementById('my-drawer-1').click()">
+                        {{ macros.render_icon('delete') }}
+                        Delete Todo
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mt-auto grid grid-cols-2 gap-4 pt-4">
+            <label for="my-drawer-1" class="btn btn-ghost bg-base-200">Cancel</label>
+            <button type="submit"
+                    class="btn btn-primary text-white"
+                    onclick="if(this.form.checkValidity()) {
+                        document.getElementById('my-drawer-1').checked = false;
+                        window.dispatchEvent(new CustomEvent('drawer-closed'));
+                    }">
+                {{ "Save Changes" if isEdit else "Create New" }}
+            </button>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro _view_categories(todo, isEdit) %}
+    <div id="view-categories" class="drawer-view hidden flex flex-col h-full gap-5">
+        <div class="flex items-center gap-3 mb-2">
+            <button type="button" onclick="discardChanges('categories'); switchView('view-main')"
+                    class="btn btn-sm btn-circle btn-ghost">
+                {{ macros.render_icon('arrow_backward') }}
+            </button>
+            <h2 class="font-bold text-xl text-base-content">Manage Categories</h2>
+            <button type="button" onclick="commitChanges('categories'); switchView('view-main')"
+                    class="btn btn-sm btn-primary ml-auto text-white">
+                Done
+            </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto flex flex-col gap-4">
+            <div class="form-control">
+                <label class="label mb-1"><span class="label-text">New Category</span></label>
+                <div class="join w-full">
+                    <input id="new-cat-input" type="text"
+                           class="input input-bordered join-item w-full bg-base-200 focus:outline-none focus:ring-0 focus:border-r-transparent"
+                           placeholder="My New Category"/>
+                    <button type="button" class="btn join-item btn-primary text-white" onclick="addCategoryUI()">
+                        {{ macros.render_icon('add') }} Add
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-2 mt-2" id="categories-ui-list">
+                {% if isEdit and todo.categories %}
+                    {% for cat in todo.categories %}
+                        <div class="flex justify-between items-center bg-base-200 p-3 rounded-lg cat-item"
+                             data-val="{{ cat }}">
+                            <span class="text-sm">{{ cat }}</span>
+                            <button type="button" class="btn btn-square btn-xs btn-outline btn-error"
+                                    onclick="removeCategoryUI(this)">
+                                {{ macros.render_icon('delete') }}
+                            </button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro _view_shares(todo, isEdit, shares) %}
+    <div id="view-shares" class="drawer-view hidden flex flex-col h-full gap-5">
+        <div class="flex items-center gap-3 mb-2">
+            <button type="button" onclick="discardChanges('shares'); switchView('view-main')"
+                    class="btn btn-sm btn-circle btn-ghost">
+                {{ macros.render_icon('arrow_backward') }}
+            </button>
+            <h2 class="font-bold text-xl text-base-content">Manage Shares</h2>
+            <button type="button" onclick="commitChanges('shares'); switchView('view-main')"
+                    class="btn btn-sm btn-primary ml-auto text-white">
+                Done
+            </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto flex flex-col gap-4">
+            <div class="flex flex-col gap-2">
+                <label class="label mb-1"><span class="label-text">Share Todo</span></label>
+                <input id="new-share-email" type="email"
+                       class="input input-bordered w-full bg-base-200 focus:outline-none focus:ring-0"
+                       placeholder="example@gmail.com"
+                       oninput="clearShareError()"/>
+
+                <span id="share-email-error" class="text-error text-xs hidden pl-1">
+                    Please enter a valid email address.
+                </span>
+
+                <div class="join w-full mt-1">
+                    <select id="new-share-role"
+                            class="select select-bordered join-item w-full bg-base-200 !outline-none focus:!outline-0 focus-visible:!outline-0 focus:ring-0 focus:border-r-transparent">
+                        <option value="0">Read</option>
+                        <option value="1">Write</option>
+                        <option value="2">Manage</option>
+                    </select>
+                    <button type="button" class="btn join-item btn-primary text-white" onclick="addShareUI()">
+                        {{ macros.render_icon('add') }} Add
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-4 mt-2" id="shares-ui-list">
+                {% if isEdit and todo.owner_email %}
+                    <div class="bg-base-200 p-3 rounded-lg">
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="avatar placeholder">
+                                <div class="bg-neutral text-neutral-content rounded-full w-6 flex items-center justify-center">
+                                    <span class="text-xs">{{ todo.owner_email[0]|upper }}</span>
+                                </div>
+                            </div>
+                            <span class="text-sm font-bold">{{ todo.owner_email }}</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="text" value="Owner" disabled
+                                   class="input input-sm input-bordered w-full focus:outline-none focus:ring-0 text-base-content/70"/>
+                            <button type="button" class="btn btn-sm btn-square btn-outline btn-error" disabled>
+                                {{ macros.render_icon('delete') }}
+                            </button>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if isEdit and shares and shares.content %}
+                    {% for share_item in shares.content %}
+                        {% set safe_id = share_item.email | replace('@', '_') | replace('.', '_') | replace('-', '_') %}
+                        <div class="bg-base-200 p-3 rounded-lg share-item"
+                             data-email="{{ share_item.email }}"
+                             data-role="{{ share_item.access_level }}"
+                             data-safe-id="{{ safe_id }}">
+
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="avatar placeholder">
+                                    <div class="bg-primary text-primary-content rounded-full w-6 flex items-center justify-center">
+                                        <span class="text-xs">{{ share_item.email[0]|upper }}</span>
+                                    </div>
+                                </div>
+                                <span class="text-sm">{{ share_item.email }}</span>
+                            </div>
+
+                            <div class="flex gap-2">
+                                {% if share_item.access_level == 3 %}
+                                    <input type="text" value="Owner" disabled
+                                           class="input input-sm input-bordered w-full"/>
+                                {% else %}
+                                    <select class="select select-sm select-bordered w-full !outline-none focus:!outline-0 focus-visible:!outline-0 focus:ring-0"
+                                            onchange="this.closest('.share-item').setAttribute('data-role', this.value)">
+                                        <option value="0" {{ 'selected' if share_item.access_level == 0 else '' }}>
+                                            Read
+                                        </option>
+                                        <option value="1" {{ 'selected' if share_item.access_level == 1 else '' }}>
+                                            Write
+                                        </option>
+                                        <option value="2" {{ 'selected' if share_item.access_level == 2 else '' }}>
+                                            Manage
+                                        </option>
+                                    </select>
+                                {% endif %}
+
+                                <button type="button" class="btn btn-sm btn-square btn-outline btn-error"
+                                        onclick="removeShareUI(this)"
+                                        {{ 'disabled' if share_item.access_level == 3 else '' }}>
+                                    {{ macros.render_icon('delete') }}
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro _drawer_scripts() %}
+    <script>
+        let categorySnapshot = null;
+        let shareSnapshot = null;
+
+        function resetDeadline() {
+            document.getElementById('input-deadline-date').value = '';
+            document.getElementById('input-deadline-time').value = '';
+        }
+
+        function switchView(viewId) {
+            document.querySelectorAll('.drawer-view').forEach(el => el.classList.add('hidden'));
+            document.getElementById(viewId).classList.remove('hidden');
+        }
+
+        function resetDrawerView() {
+            const drawerCheckbox = document.getElementById('my-drawer-1');
+            if (!drawerCheckbox.checked) {
+                window.dispatchEvent(new CustomEvent('drawer-closed'));
+                setTimeout(() => {
+                    switchView('view-main');
+                }, 300);
+            }
+        }
+
+        function snapshotState(type) {
+            if (type === 'categories') {
+                categorySnapshot = document.getElementById('categories-ui-list').innerHTML;
+            } else if (type === 'shares') {
+                shareSnapshot = document.getElementById('shares-ui-list').innerHTML;
+            }
+        }
+
+        function discardChanges(type) {
+            if (type === 'categories' && categorySnapshot !== null) {
+                document.getElementById('categories-ui-list').innerHTML = categorySnapshot;
+            } else if (type === 'shares' && shareSnapshot !== null) {
+                document.getElementById('shares-ui-list').innerHTML = shareSnapshot;
+            }
+        }
+
+        function commitChanges(type) {
+            if (type === 'categories') {
+                document.getElementById('hidden-inputs-container').innerHTML = '';
+                document.getElementById('category-preview-list').innerHTML = '';
+
+                document.querySelectorAll('#categories-ui-list .cat-item').forEach(item => {
+                    const val = item.getAttribute('data-val');
+
+                    const hiddenHtml = `<input type="hidden" name="categories" value="${val}" id="hidden-cat-${val}">`;
+                    document.getElementById('hidden-inputs-container').insertAdjacentHTML('beforeend', hiddenHtml);
+
+                    const previewHtml = `<span class="badge badge-outline badge-primary badge-sm" id="prev-cat-${val}">${val}</span>`;
+                    document.getElementById('category-preview-list').insertAdjacentHTML('beforeend', previewHtml);
+                });
+
+                updateSummaries();
+
+            } else if (type === 'shares') {
+                document.getElementById('hidden-shares-container').innerHTML = '';
+
+                document.querySelectorAll('#shares-ui-list .share-item').forEach(item => {
+                    const email = item.getAttribute('data-email');
+                    const role = item.getAttribute('data-role');
+                    const safeId = item.getAttribute('data-safe-id');
+                    const hiddenHtml = `
+                    <input type="hidden" name="shares_email" value="${email}" id="hidden-share-email-${safeId}">
+                    <input type="hidden" name="shares_access_level" value="${role}" id="hidden-share-role-${safeId}">`;
+                    document.getElementById('hidden-shares-container').insertAdjacentHTML('beforeend', hiddenHtml);
+                });
+
+                updateSummaries();
+            }
+        }
+
+        function updateSummaries() {
+            const catCount = document.querySelectorAll('#hidden-inputs-container input').length;
+            const catSummary = document.getElementById('categories-summary-text');
+            if (catCount > 0) {
+                catSummary.classList.add('hidden');
+            } else {
+                catSummary.classList.remove('hidden');
+            }
+
+            const shareCount = document.querySelectorAll('#hidden-shares-container input[name="shares_email"]').length;
+            const shareSummary = document.getElementById('shares-summary-text');
+            if (shareCount > 0) {
+                shareSummary.textContent = `Shared with ${shareCount} people`;
+            } else {
+                shareSummary.textContent = 'Manage access';
+            }
+        }
+
+        function addCategoryUI() {
+            const input = document.getElementById('new-cat-input');
+            const val = input.value.trim();
+            if (!val) return;
+
+            const uiHtml = `
+                <div class="flex justify-between items-center bg-base-200 p-3 rounded-lg cat-item" data-val="${val}">
+                    <span class="text-sm">${val}</span>
+                    <button type="button" class="btn btn-square btn-xs btn-outline btn-error" onclick="removeCategoryUI(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" width="24px" class="w-6 h-6 transition-colors duration-200" fill="currentColor" viewBox="0 -960 960 960"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360ZM160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
+                    </button>
+                </div>`;
+            document.getElementById('categories-ui-list').insertAdjacentHTML('beforeend', uiHtml);
+            input.value = '';
+        }
+
+        function removeCategoryUI(btn) {
+            const item = btn.closest('.cat-item');
+            item.remove();
+        }
+
+        function addShareUI() {
+            const emailInput = document.getElementById('new-share-email');
+            const roleSelect = document.getElementById('new-share-role');
+            const errorMsg = document.getElementById('share-email-error');
+
+            const email = emailInput.value.trim();
+            const roleVal = roleSelect.value;
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!email || !emailPattern.test(email)) {
+                emailInput.classList.add('input-error');
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+            clearShareError();
+            const safeEmailId = email.replace(/[@.-]/g, '_');
+
+            const uiHtml = `
+            <div class="bg-base-200 p-3 rounded-lg share-item"
+                 data-email="${email}"
+                 data-role="${roleVal}"
+                 data-safe-id="${safeEmailId}">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="avatar placeholder">
+                        <div class="bg-primary text-primary-content rounded-full w-6 flex items-center justify-center">
+                            <span class="text-xs">${email[0].toUpperCase()}</span>
+                        </div>
+                    </div>
+                    <span class="text-sm">${email}</span>
+                </div>
+                <div class="flex gap-2">
+                    <select class="select select-sm select-bordered w-full !outline-none focus:!outline-0 focus-visible:!outline-0 focus:ring-0"
+                            onchange="this.closest('.share-item').setAttribute('data-role', this.value)">
+                        <option value="0" ${roleVal === '0' ? 'selected' : ''}>Read</option>
+                        <option value="1" ${roleVal === '1' ? 'selected' : ''}>Write</option>
+                        <option value="2" ${roleVal === '2' ? 'selected' : ''}>Manage</option>
+                    </select>
+                    <button type="button" class="btn btn-sm btn-square btn-outline btn-error" onclick="removeShareUI(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" width="24px" class="w-6 h-6 transition-colors duration-200" fill="currentColor" viewBox="0 -960 960 960"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
+                    </button>
+                </div>
+            </div>`;
+            document.getElementById('shares-ui-list').insertAdjacentHTML('beforeend', uiHtml);
+            emailInput.value = '';
+        }
+
+        function clearShareError() {
+            const emailInput = document.getElementById('new-share-email');
+            const errorMsg = document.getElementById('share-email-error');
+            emailInput.classList.remove('input-error');
+            errorMsg.classList.add('hidden');
+        }
+
+        function removeShareUI(btn) {
+            const item = btn.closest('.share-item');
+            item.remove();
+        }
+
+        setTimeout(() => {
+            const drawerCheckbox = document.getElementById('my-drawer-1');
+            if (drawerCheckbox) {
+                drawerCheckbox.checked = true;
+            }
+        }, 10);
+    </script>
+{% endmacro %}

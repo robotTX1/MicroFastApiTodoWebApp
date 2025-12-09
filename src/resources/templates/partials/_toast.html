@@ -1,0 +1,15 @@
+{% if toast_message %}
+    <div id="global-toast" hx-swap-oob="true">
+        <div class="toast toast-bottom toast-end z-50 cursor-pointer"
+             x-data="{ show: true }"
+             x-show="show"
+             x-transition.duration.500ms
+             x-init="setTimeout(() => show = false, 3000)"
+             @click="show = false">
+            
+            <div class="alert {{ 'alert-success' if toast_type == 'success' else ('alert-warning' if toast_type == 'warning' else 'alert-error') }}">
+                <span>{{ toast_message }}</span>
+            </div>
+        </div>
+    </div>
+{% endif %}

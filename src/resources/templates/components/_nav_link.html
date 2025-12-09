@@ -9,7 +9,10 @@
        hx-target="#content"
        hx-swap="outerHTML"
        hx-replace-url="{{ url }}"
-       @click="activeUrl = '{{ url }}'"
+       @click="
+            activeUrl = '{{ url }}';
+            lastActiveUrl = '{{ url }}';
+       "
        :class="[
             checkActive('{{ url }}')
                 ? 'bg-neutral {{ color_active }}'
@@ -45,7 +48,11 @@
        hx-target="#content"
        hx-swap="outerHTML"
        hx-replace-url="{{ url }}"
-       @click="activeUrl = '{{ url }}'"
+       @click="
+            activeUrl = '{{ url }}';
+            lastActiveUrl = '{{ url }}';
+            if(document.getElementById('my-drawer-1')) document.getElementById('my-drawer-1').checked = false;
+       "
        :class="checkActive('{{ url }}')
             ? 'bg-neutral {{ color_active }}'
             : 'text-base-content/60 hover:bg-base-200 {{ color_inactive }}'"
@@ -57,20 +64,22 @@
 {% endmacro %}
 
 
-{% macro mobile_add(url, htmx_url, icon='add') %}
-    <a href="{{ url }}"
-       hx-get="{{ htmx_url }}"
-       hx-target="#content"
-       hx-swap="outerHTML"
-       hx-replace-url="{{ url }}"
-       @click="activeUrl = '{{ url }}'"
-       :class="checkActive('{{ url }}')
-            ? 'bg-primary text-neutral-content border-primary shadow-lg scale-105'
-            : 'bg-transparent text-base-content/60 border-primary/40 hover:border-primary hover:bg-primary/10'"
-       class="flex items-center justify-center border-2 rounded-full transition-all duration-300 h-12 w-12">
+{% macro mobile_add(hx_get, target, swap, icon='add') %}
+    <button type="button"
+            hx-get="{{ hx_get }}"
+            hx-target="{{ target }}"
+            hx-swap="{{ swap }}"
+            @click="
+                lastActiveUrl = activeUrl;
+                activeUrl = '{{ hx_get }}';
+            "
+            class="flex items-center justify-center border-2 rounded-full transition-all duration-300 h-12 w-12"
+            :class="activeUrl === '{{ hx_get }}'
+                ? 'bg-primary text-neutral-content border-primary shadow-lg scale-105'
+                : 'bg-transparent text-base-content/60 border-primary/40 hover:border-primary hover:bg-primary/10 hover:text-primary'">
 
         <div class="transform transition-transform duration-200 active:scale-95">
             {{ macros.render_icon(icon) }}
         </div>
-    </a>
+    </button>
 {% endmacro %}

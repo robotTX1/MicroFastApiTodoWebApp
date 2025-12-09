@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import List
 
+
 from pydantic import BaseModel, Field
 
 
@@ -29,6 +30,15 @@ class TodoPatchRequest(BaseTodoRequest):
     pass
 
 
+class TodoPatchNoDateRequest(BaseModel):
+    title: str | None = None
+    description: str | None = None
+    completed: bool | None = None
+    parent: int | None = None
+    priority: int | None = 0
+    categories: List[str] | None = None
+
+
 class TodoShareRequest(BaseModel):
     email: str
-    access_level: int
+    accessLevel: int
