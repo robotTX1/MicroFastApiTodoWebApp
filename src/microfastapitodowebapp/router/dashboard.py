@@ -82,7 +82,7 @@ async def get_edit_todo_drawer(request: Request, todo_id: int):
 
 @router.put("/todos/{todo_id}/toggle", name="todo_toggle", response_class=HTMLResponse)
 async def create_todo_from_form(request: Request, todo_id: int, completed: Annotated[bool, Form()]):
-    patch_request = TodoPatchNoDateRequest(completed=completed)
+    patch_request = TodoPatchNoDateRequest(priority=None, completed=completed)
     try:
         await todo_service.patch_todo(request, todo_id, patch_request)
     except Exception:
