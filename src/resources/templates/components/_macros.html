@@ -1,22 +1,29 @@
-{% macro todo_card(todo) %}
+{% macro todo_card(request, todo) %}
     <div class="flex flex-col h-64 bg-base-200 rounded-2xl border-l-4 {{ priority_color(todo.priority) }} p-3 cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-[1.01]"
-        hx-get="/dashboard/partials/drawer/{{ todo.id }}"
-        hx-target="#drawer-container"
-        hx-swap="innerHTML">
+         hx-get="{{ request.url_for('drawer_update', todo_id=todo.id) }}"
+         hx-target="#drawer-container"
+         hx-swap="innerHTML">
         <div class="flex flex-nowrap items-center justify-between pb-2 border-b-1 border-b-neutral">
             <h2 class="text-lg font-bold text-nowrap truncate">{{ todo.title }}</h2>
-            <input type="checkbox" class="checkbox checkbox-lg" {{ 'checked="checked"' if todo.completed }} onclick="stopPropagation()"/>
+            <input type="checkbox" class="checkbox checkbox-lg" {{ 'checked="checked"' if todo.completed }}
+                   hx-put="{{ request.url_for('todo_toggle', todo_id=todo.id) }}"
+                   hx-vals='js:{"completed": event.target.checked}'
+                   hx-swap="none"
+                   @click.stop
+            />
         </div>
         <div class="mt-2 flex-1">
             <p class="line-clamp-5 text-wrap">{{ todo.description }}</p>
         </div>
         <div class="flex items-center pt-2 mt-2 border-t-1 border-t-neutral">
-            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="24px"
+                 fill="currentColor">
                 <path d="M200-640h560v-80H200v80Zm0 0v-80 80Zm0 560q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v227q-19-9-39-15t-41-9v-43H200v400h252q7 22 16.5 42T491-80H200Zm520 40q-83 0-141.5-58.5T520-240q0-83 58.5-141.5T720-440q83 0 141.5 58.5T920-240q0 83-58.5 141.5T720-40Zm67-105 28-28-75-75v-112h-40v128l87 87Z"></path>
             </svg>
             <p class="ml-1 mr-2">{{ todo.deadline.strftime('%Y-%m-%d') if todo.deadline else 'No Date' }}</p>
 
-            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="24px"
+                 fill="currentColor">
                 <path d="M480-80q-75 0-140.5-28.5t-114-77q-48.5-48.5-77-114T120-440q0-75 28.5-140.5t77-114q48.5-48.5 114-77T480-800q75 0 140.5 28.5t114 77q48.5 48.5 77 114T840-440q0 75-28.5 140.5t-77 114q-48.5 48.5-114 77T480-80Zm0-360Zm112 168 56-56-128-128v-184h-80v216l152 152ZM224-866l56 56-170 170-56-56 170-170Zm512 0 170 170-56 56-170-170 56-56ZM480-160q117 0 198.5-81.5T760-440q0-117-81.5-198.5T480-720q-117 0-198.5 81.5T200-440q0 117 81.5 198.5T480-160Z"></path>
             </svg>
             <p class="mx-1">{{ todo.deadline.strftime('%H:%M') if todo.deadline else '--:--' }}</p>
