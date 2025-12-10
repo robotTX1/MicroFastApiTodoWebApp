@@ -1,11 +1,73 @@
 {% extends "base.html" %}
 
-{% block title %}Landing page{% endblock %}
+{% block title %}Welcome - Todo App{% endblock %}
 
 {% block main %}
-    <div id="content" class="flex flex-col items-center min-h-screen">
-        <h1 class="text-3xl">Welcome to the Todo Web App!</h1>
-        <h2 class="text-1xl">This is the landing page of the app. This page does not require authentication</h2>
-        <a class="link link-secondary" href="{{ url_for('dashboard') }}">Go to dashboard</a>
+    <div class="flex flex-col w-full">
+
+        <nav class="navbar bg-base-100 shadow-sm px-4 md:px-8">
+            <div class="flex-1">
+                <span class="text-xl font-bold text-primary tracking-tight">
+                    Todo App
+                </span>
+            </div>
+            <div class="flex-none">
+                <a href="{{ url_for('dashboard') }}"
+                   class="btn btn-sm btn-ghost md:btn-md text-base-content hover:bg-base-200">
+                    Go to Dashboard &rarr;
+                </a>
+            </div>
+        </nav>
+
+        <div class="hero flex-grow bg-base-200 overflow-hidden relative">
+
+            <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-primary/10 blur-3xl"></div>
+
+            <div class="hero-content flex-col-reverse lg:flex-row-reverse gap-12 lg:gap-20 z-10">
+
+                <div class="relative w-full max-w-sm lg:max-w-md perspective-1000 min-h-[22rem] lg:min-h-0">
+
+                    <img src="{{ url_for('static', path='images/tablet.png') }}"
+                         alt="Tablet App View"
+                         class="absolute top-0 -right-12 w-60 h-80 rounded-2xl shadow-xl transform rotate-12 opacity-60 scale-90 border-4 border-base-100"/>
+
+                    <img src="{{ url_for('static', path='images/mobile.png') }}"
+                         alt="Mobile App"
+                         class="absolute top-10 -left-8 w-48 rounded-2xl shadow-2xl transform -rotate-6 border-4 border-base-100 z-10"/>
+
+                    <div class="relative rounded-2xl shadow-2xl transform rotate-3 border-8 border-base-100 bg-base-100 z-20 overflow-hidden group hover:rotate-0 hover:scale-105 transition-all duration-500 ease-out">
+                        <img src="{{ url_for('static', path='images/dashboard.png') }}"
+                             alt="App Dashboard"
+                             class="w-full"/>
+
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+                    </div>
+
+                </div>
+
+                <div class="text-center lg:text-left max-w-lg">
+                    <div class="badge badge-primary badge-outline mb-4">v1.0 Now Live</div>
+                    <h1 class="text-5xl font-extrabold text-base-content leading-tight">
+                        Organize your life <br/>
+                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+                            in seconds.
+                        </span>
+                    </h1>
+                    <p class="py-6 text-base-content/70 text-lg leading-relaxed">
+                        Stop juggling tasks in your head. Our minimalistic dashboard helps you capture, organize, and
+                        crush your goals without the distractions.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <a href="{{ url_for('dashboard') }}"
+                           class="btn btn-primary btn-lg shadow-lg hover:-translate-y-1 transition-transform">
+                            Go To Dashboard
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
     </div>
 {% endblock %}

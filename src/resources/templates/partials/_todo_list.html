@@ -1,44 +1,69 @@
 {% from "components/_macros.html" import todo_card %}
 {% from "components/_macros.html" import pagination_button %}
 
+<h1 id="header_text" class="font-bold text-3xl text-primary justify-self-center md:justify-self-start" hx-swap-oob="true">
+    {% set mode = request.query_params["mode"]|string() if request.query_params["mode"] else 'OWN' %}
+    {% if mode == 'OWN' %}
+        My Todos
+    {% elif mode == 'SHARED' %}
+        Shared Todos
+    {% elif mode == 'ALL' %}
+        All Todos
+    {% else %}
+        Dashboard
+    {% endif %}
+</h1>
+
 {% for todo in todos %}
     <div class="m-2">
         {{ todo_card(todo) }}
     </div>
 {% else %}
-    <p>No todos found!</p>
+    <div class="col-span-full flex flex-col items-center justify-center py-12 text-base-content/60">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+             class="w-12 h-12 mb-2 opacity-50">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <p class="text-lg font-medium text-center">No todos found!</p>
+        <p class="text-sm text-center opacity-70">Try adjusting your search or filters.</p>
+    </div>
 {% endfor %}
 
-<div id="pagination" hx-swap-oob="pagination#innerHTML">
-    {% set current_page = request.query_params["pageNumber"]|int() if request.query_params["pageNumber"] else 0 %}
-    {% set start_page = [current_page - 3, 0]|max %}
-    {% set end_page = [current_page + 4, page.total_pages]|min %}
-    <div class="join">
-        <button class="join-item btn btn-secondary {{ "btn-disabled" if current_page == 0 }}"
-                hx-get="{{ url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(pageNumber=current_page - 1) }}"
-                hx-replace-url="{{ url_for('dashboard').include_query_params(**request.query_params).include_query_params(pageNumber=current_page - 1) }}"
-                hx-target="#content"
-                hx-swap="innerHTML show:top"
-        >
-            &lt;
-        </button>
-        {% for i in range(start_page, end_page) %}
-            <button class="join-item btn {{ "btn-active" if current_page == i }}"
-                    hx-get="{{ url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(pageNumber=i) }}"
-                    hx-replace-url="{{ url_for('dashboard').include_query_params(**request.query_params).include_query_params(pageNumber=i) }}"
+{% if page.total_elements != 0 %}
+    <div id="pagination" hx-swap-oob="pagination#innerHTML">
+        {% set current_page = request.query_params["pageNumber"]|int() if request.query_params["pageNumber"] else 0 %}
+        {% set start_page = [current_page - 3, 0]|max %}
+        {% set end_page = [current_page + 4, page.total_pages]|min %}
+        <div class="join">
+            <button class="join-item btn btn-secondary {{ "btn-disabled" if current_page == 0 }}"
+                    hx-get="{{ url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(pageNumber=current_page - 1) }}"
+                    hx-replace-url="{{ url_for('dashboard').include_query_params(**request.query_params).include_query_params(pageNumber=current_page - 1) }}"
                     hx-target="#content"
                     hx-swap="innerHTML show:top"
             >
-                {{ i + 1 }}
+                &lt;
             </button>
-        {% endfor %}
-        <button class="join-item btn btn-secondary {{ "btn-disabled" if current_page == (end_page - 1) }}"
-                hx-get="{{ url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(pageNumber=current_page + 1) }}"
-                hx-replace-url="{{ url_for('dashboard').include_query_params(**request.query_params).include_query_params(pageNumber=current_page + 1) }}"
-                hx-target="#content"
-                hx-swap="innerHTML show:top"
-        >
-            &gt;
-        </button>
+            {% for i in range(start_page, end_page) %}
+                <button class="join-item btn {{ "btn-active" if current_page == i }}"
+                        hx-get="{{ url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(pageNumber=i) }}"
+                        hx-replace-url="{{ url_for('dashboard').include_query_params(**request.query_params).include_query_params(pageNumber=i) }}"
+                        hx-target="#content"
+                        hx-swap="innerHTML show:top"
+                >
+                    {{ i + 1 }}
+                </button>
+            {% endfor %}
+            <button class="join-item btn btn-secondary {{ "btn-disabled" if current_page == (end_page - 1) }}"
+                    hx-get="{{ url_for('dashboard_content').include_query_params(**request.query_params).include_query_params(pageNumber=current_page + 1) }}"
+                    hx-replace-url="{{ url_for('dashboard').include_query_params(**request.query_params).include_query_params(pageNumber=current_page + 1) }}"
+                    hx-target="#content"
+                    hx-swap="innerHTML show:top"
+            >
+                &gt;
+            </button>
+        </div>
     </div>
-</div>
+{% else %}
+    <div id="pagination" hx-swap-oob="pagination#innerHTML"></div>
+{% endif %}

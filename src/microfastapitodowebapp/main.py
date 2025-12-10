@@ -6,7 +6,8 @@ from loguru import logger
 from starsessions import SessionMiddleware, SessionAutoloadMiddleware
 
 from microfastapitodowebapp.config import logging
-from microfastapitodowebapp.config.middleware import AuthGuardMiddleware, RequestContextMiddleware
+from microfastapitodowebapp.config.middleware import AuthGuardMiddleware, RequestContextMiddleware, \
+    HTMXRedirectMiddleware
 from microfastapitodowebapp.config.valkey import valkey_store, valkey_client
 from microfastapitodowebapp.router import landing, dashboard, auth
 
@@ -29,6 +30,7 @@ app.mount("/static", StaticFiles(directory="src/resources/static"), name="static
 app.add_middleware(RequestContextMiddleware)
 app.add_middleware(AuthGuardMiddleware, callback_endpoint_name="auth_callback",
                    public_urls=["/", "/favicon.ico", "/login**", "/static/**"])
+app.add_middleware(HTMXRedirectMiddleware)
 app.add_middleware(SessionAutoloadMiddleware)
 app.add_middleware(SessionMiddleware, store=valkey_store, lifetime=3600, rolling=True)
 

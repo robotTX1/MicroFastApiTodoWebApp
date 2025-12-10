@@ -4,13 +4,15 @@ from datetime import datetime, timezone
 from fastapi.requests import Request
 from loguru import logger
 from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import Response
 from starlette.types import ASGIApp
 
 from microfastapitodowebapp.config.context import request_context
 from microfastapitodowebapp.config.oauth import oauth
+from microfastapitodowebapp.config.configuration import service_config
 
 TOKEN = "token"
-
+AUTH_SERVER_HOST = service_config.get("authorizationServerHost")
 
 class RequestContextMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
@@ -49,9 +51,28 @@ class AuthGuardMiddleware(BaseHTTPMiddleware):
                 if refresh_expires_at > now:
                     return await call_next(request)
         logger.trace("User is not authenticated, redirecting to login page")
-        redirect_url = request.url.path
+        if request.headers.get("HX-Request") and request.headers.get("HX-Current-URL"):
+            redirect_url = request.headers.get("HX-Current-URL")
+        else:
+            redirect_url = str(request.url)
         if request.url.query != "":
             redirect_url += "?" + request.url.query
         request.session["redirect_url"] = redirect_url
         redirect_uri = request.url_for('auth_callback')
         return await oauth.keycloak.authorize_redirect(request, redirect_uri)
+
+
+class HTMXRedirectMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        if request.headers.get("HX-Request"):
+            if response.status_code in (301, 302, 303, 307, 308):
+                location = response.headers.get("location")
+                if AUTH_SERVER_HOST in location:
+                    new_response = Response(status_code=200)
+                    new_response.headers["HX-Redirect"] = location
+                    cookie_val = response.headers.get("set-cookie")
+                    if cookie_val:
+                        new_response.headers["set-cookie"] = cookie_val
+                    return new_response
+        return response
