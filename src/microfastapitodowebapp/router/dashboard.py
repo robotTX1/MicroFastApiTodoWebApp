@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Query, Depends
+from fastapi import APIRouter, Query, Depends, Form
 from fastapi.responses import HTMLResponse
 
 from microfastapitodowebapp.domain.query import QueryMode, TodoQuery
@@ -60,7 +60,7 @@ async def get_partial_statistics(request: Request,
     )
 
 
-@router.get("/partials/drawer/new", response_class=HTMLResponse)
+@router.get("/partials/drawer/new", name="drawer_new", response_class=HTMLResponse)
 async def get_new_todo_drawer(request: Request):
     return templates.TemplateResponse(
         request=request,
@@ -69,7 +69,7 @@ async def get_new_todo_drawer(request: Request):
     )
 
 
-@router.get("/partials/drawer/{todo_id}", response_class=HTMLResponse)
+@router.get("/partials/drawer/{todo_id}", name="drawer_update", response_class=HTMLResponse)
 async def get_edit_todo_drawer(request: Request, todo_id: int):
     todo_item = await todo_service.get_todo_by_id(request, todo_id)
     shares = await share_service.get_todo_shares(request, todo_id)
@@ -79,6 +79,15 @@ async def get_edit_todo_drawer(request: Request, todo_id: int):
         context={"todo": todo_item, "share": shares}
     )
 
+
+@router.put("/todos/{todo_id}/toggle", name="todo_toggle", response_class=HTMLResponse)
+async def create_todo_from_form(request: Request, todo_id: int, completed: Annotated[bool, Form()]):
+    patch_request = TodoPatchNoDateRequest(completed=completed)
+    try:
+        await todo_service.patch_todo(request, todo_id, patch_request)
+    except Exception:
+        return create_toast_response(request, shares_ok=False, is_error=True, custom_message="Failed Todo Update")
+    return create_toast_response(request, shares_ok=True, is_error=False, custom_message="Todo Updated")
 
 @router.post("/todos/create", response_class=HTMLResponse)
 async def create_todo_from_form(request: Request,
